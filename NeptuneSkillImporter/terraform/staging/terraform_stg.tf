@@ -124,6 +124,7 @@ resource "aws_security_group" "stg-skill-importer-security-group" {
   }
 }
 
+# Neptune
 resource "aws_neptune_cluster" "stg-skill-importer-cluster" {
   engine                    = "neptune"
   backup_retention_period   = 1
@@ -143,9 +144,9 @@ resource "aws_neptune_cluster_instance" "stg-skill-importer-instance" {
 }
 
 # EC2
-
 data "aws_ami" "amazon-linux-2-ami" {
   most_recent = true
+  owners      = ["amazon"]
 
   filter {
     name   = "owner-alias"
@@ -155,5 +156,62 @@ data "aws_ami" "amazon-linux-2-ami" {
   filter {
     name   = "name"
     values = ["amzn2-ami-hvm*"]
+  }
+}
+
+resource "aws_instance" "stg-skill-importer-ec2-instance" {
+  ami                         = data.aws_ami.amazon-linux-2-ami.id
+  instance_type               = "t2.micro"
+  vpc_security_group_ids      = ["${aws_security_group.stg-skill-importer-security-group.id}"]
+  subnet_id                   = aws_subnet.stg-skill-importer-subnet.id
+  key_name                    = "ssh-ec2-test"
+  associate_public_ip_address = true
+
+
+  tags = {
+    Name        = "stg-SkillImporterEC2"
+    Environment = "staging"
+  }
+}
+
+# Cloudwatch
+resource "aws_cloudwatch_event_rule" "stg-skill-importer-start-rule" {
+  name                = "stg-skill-importer-start-rule"
+  schedule_expression = "rate(10 minutes)"
+}
+
+resource "aws_cloudwatch_event_target" "stg-skill-importer-start-target" {
+  rule = aws_cloudwatch_event_rule.stg-skill-importer-start-rule.name
+  arn  = aws_lambda_function.stg-skill-importer-starter-lambda.arn
+}
+
+resource "aws_lambda_permission" "allow-cloudwatch-to-call-skill-importer-starter" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.stg-skill-importer-starter-lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.stg-skill-importer-start-rule.arn
+}
+
+# Lambda
+resource "aws_lambda_function" "stg-skill-importer-starter-lambda" {
+  function_name    = "stg-SkillImporterStarter"
+  handler          = "SkillImporterManager::SkillImporterManager.Function::FunctionHandler"
+  runtime          = "dotnetcore2.1"
+  role             = "arn:aws:iam::833191605868:role/DeleteThisRole"
+  filename         = "../../src/data/SkillImporterMANAGER.zip"
+  source_code_hash = filebase64sha256("../../src/data/SkillImporterMANAGER.zip")
+  timeout          = 10
+  memory_size      = 256
+
+  tags = {
+    Name        = "stg-SkillImporterStarter"
+    Environment = "staging"
+  }
+
+  environment {
+    variables = {
+      AWS_EC2_INSTANCE = aws_instance.stg-skill-importer-ec2-instance.id
+    }
   }
 }

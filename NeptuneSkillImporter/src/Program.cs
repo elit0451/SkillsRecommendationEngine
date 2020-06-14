@@ -19,9 +19,8 @@ namespace NeptuneSkillImporter
 {
     public class Program
     {
-        public static async Task Main()
+        public static async Task Main(string[] args)
         {
-
             string bucketName = "jobposts-scraped-tests";
             var s3Connector = new S3Connector(RegionEndpoint.EUWest1, bucketName);
             ICollection<S3Object> jobPostsKeys = await s3Connector.GetFiles(from: new DateTime(2020, 05, 09));
@@ -29,14 +28,14 @@ namespace NeptuneSkillImporter
 
             JobPostRepo.Add(jobPostsObjs);
             Console.WriteLine("Starting the RUN()");
-            new Program().Run();
+            if (!string.IsNullOrEmpty(args[0]) && !string.IsNullOrEmpty(args[1]))
+                new Program().Run(args[0], Convert.ToInt32(args[1]));
+            else
+                new Program().Run();
         }
 
-        public void Run()
+        public void Run(string endpoint = "localhost", int port = 8182)
         {
-            const string endpoint = "localhost";
-            const int port = 8182;
-
             try
             {
                 var skills = new List<Skill>();
