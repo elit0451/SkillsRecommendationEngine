@@ -21,7 +21,9 @@ namespace NeptuneSkillImporter
     {
         public static async Task Main()
         {
-            var s3Connector = new S3Connector(RegionEndpoint.EUWest1, "jobposts-scraped", "AKIA4D7QW6ZWISEHKL7H", "VTGqBP5v6YcSmtH9WTIkSP/2BLVf8W1+3RQ2FB8H");
+
+            string bucketName = "jobposts-scraped-tests";
+            var s3Connector = new S3Connector(RegionEndpoint.EUWest1, bucketName);
             ICollection<S3Object> jobPostsKeys = await s3Connector.GetFiles(from: new DateTime(2020, 05, 09));
             ICollection<JobPost> jobPostsObjs = await s3Connector.GetFileContents(jobPostsKeys);
 

@@ -12,13 +12,13 @@ namespace NeptuneSkillImporterTests
 {
     public class S3ConnectorTests
     {
-        internal const string bucketName = "jobposts-scraped-tests";
+        internal string bucketName = "jobposts-scraped-tests";
         internal RegionEndpoint region = RegionEndpoint.EUWest1;
 
         [Fact]
         public void S3ConnectorCtorTest()
         {
-            var s3Connector = new S3Connector(region, bucketName, "AKIA4D7QW6ZWISEHKL7H", "VTGqBP5v6YcSmtH9WTIkSP/2BLVf8W1+3RQ2FB8H");
+            var s3Connector = new S3Connector(region, bucketName);
             //var s3Connector = new S3Connector(region, bucketName);
 
             Assert.False(s3Connector is null);
@@ -27,7 +27,7 @@ namespace NeptuneSkillImporterTests
         [Fact]
         public async Task GetNoFilesTest()
         {
-            var s3Connector = new S3Connector(region, bucketName, "AKIA4D7QW6ZWISEHKL7H", "VTGqBP5v6YcSmtH9WTIkSP/2BLVf8W1+3RQ2FB8H");
+            var s3Connector = new S3Connector(region, bucketName);
             //var s3Connector = new S3Connector(region, bucketName);
 
             ICollection<S3Object> jobPostsKeys = await s3Connector.GetFiles(to: new DateTime(2020, 05, 08));
@@ -38,7 +38,7 @@ namespace NeptuneSkillImporterTests
         [Fact]
         public async Task GetAllFilesTest()
         {
-            var s3Connector = new S3Connector(region, bucketName, "AKIA4D7QW6ZWISEHKL7H", "VTGqBP5v6YcSmtH9WTIkSP/2BLVf8W1+3RQ2FB8H");
+            var s3Connector = new S3Connector(region, bucketName);
             //var s3Connector = new S3Connector(region, bucketName);
 
             ICollection<S3Object> jobPostsKeys = await s3Connector.GetFiles();
@@ -50,7 +50,7 @@ namespace NeptuneSkillImporterTests
         [Fact]
         public async Task GetSingleFileTest()
         {
-            var s3Connector = new S3Connector(region, bucketName, "AKIA4D7QW6ZWISEHKL7H", "VTGqBP5v6YcSmtH9WTIkSP/2BLVf8W1+3RQ2FB8H");
+            var s3Connector = new S3Connector(region, bucketName);
             //var s3Connector = new S3Connector(region, bucketName);
 
             ICollection<S3Object> jobPostsKeys = await s3Connector.GetFiles(from: new DateTime(2020, 05, 13));
@@ -62,7 +62,7 @@ namespace NeptuneSkillImporterTests
         [Fact]
         public async Task GetFileContentsTest()
         {
-            var s3Connector = new S3Connector(region, bucketName, "AKIA4D7QW6ZWISEHKL7H", "VTGqBP5v6YcSmtH9WTIkSP/2BLVf8W1+3RQ2FB8H");
+            var s3Connector = new S3Connector(region, bucketName);
             //var s3Connector = new S3Connector(region, bucketName);
 
             ICollection<S3Object> jobPostsKeys = await s3Connector.GetFiles();
