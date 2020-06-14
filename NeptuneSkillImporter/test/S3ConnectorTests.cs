@@ -19,7 +19,6 @@ namespace NeptuneSkillImporterTests
         public void S3ConnectorCtorTest()
         {
             var s3Connector = new S3Connector(region, bucketName);
-            //var s3Connector = new S3Connector(region, bucketName);
 
             Assert.False(s3Connector is null);
         }
@@ -28,7 +27,6 @@ namespace NeptuneSkillImporterTests
         public async Task GetNoFilesTest()
         {
             var s3Connector = new S3Connector(region, bucketName);
-            //var s3Connector = new S3Connector(region, bucketName);
 
             ICollection<S3Object> jobPostsKeys = await s3Connector.GetFiles(to: new DateTime(2020, 05, 08));
 
@@ -39,7 +37,6 @@ namespace NeptuneSkillImporterTests
         public async Task GetAllFilesTest()
         {
             var s3Connector = new S3Connector(region, bucketName);
-            //var s3Connector = new S3Connector(region, bucketName);
 
             ICollection<S3Object> jobPostsKeys = await s3Connector.GetFiles();
 
@@ -51,7 +48,6 @@ namespace NeptuneSkillImporterTests
         public async Task GetSingleFileTest()
         {
             var s3Connector = new S3Connector(region, bucketName);
-            //var s3Connector = new S3Connector(region, bucketName);
 
             ICollection<S3Object> jobPostsKeys = await s3Connector.GetFiles(from: new DateTime(2020, 05, 13));
 
@@ -63,7 +59,6 @@ namespace NeptuneSkillImporterTests
         public async Task GetFileContentsTest()
         {
             var s3Connector = new S3Connector(region, bucketName);
-            //var s3Connector = new S3Connector(region, bucketName);
 
             ICollection<S3Object> jobPostsKeys = await s3Connector.GetFiles();
             ICollection<JobPost> jobPostsObjs = await s3Connector.GetFileContents(jobPostsKeys);
