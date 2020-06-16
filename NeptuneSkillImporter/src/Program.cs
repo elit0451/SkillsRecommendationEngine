@@ -47,8 +47,8 @@ namespace NeptuneSkillImporter
                 gremlinDB.Drop();
 
                 // get job posts
-                //var jobPosts = JobPostRepo.Get();
-                var jobPosts = JobPostRepo.GetJobPosts();
+                var jobPosts = JobPostRepo.Get();
+                //var jobPosts = JobPostRepo.GetJobPosts();
 
                 // load csv data for skills
                 skills = LoadDataToMemory();
