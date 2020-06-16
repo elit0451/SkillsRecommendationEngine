@@ -57,7 +57,7 @@ Resources:
                 commands:
                   - wget http://mirrors.rackhosting.com/apache/tinkerpop/3.4.7/apache-tinkerpop-gremlin-server-3.4.7-bin.zip
                   - unzip apache-tinkerpop-gremlin-server-3.4.7-bin.zip
-                  - cd apache-tinkerpop-gremlin-server-3.4.7-bin
+                  - cd apache-tinkerpop-gremlin-server-3.4.7
                   - bin/gremlin-server.sh start
                   - cd ..
               build:
@@ -113,7 +113,7 @@ Resources:
                   - cd ..
                   - wget http://mirrors.rackhosting.com/apache/tinkerpop/3.4.7/apache-tinkerpop-gremlin-server-3.4.7-bin.zip
                   - unzip apache-tinkerpop-gremlin-server-3.4.7-bin.zip
-                  - cd apache-tinkerpop-gremlin-server-3.4.7-bin
+                  - cd apache-tinkerpop-gremlin-server-3.4.7
                   - bin/gremlin-server.sh start
                   - cd ..
               pre_build:
@@ -199,7 +199,7 @@ Resources:
                   - cd ..
                   - wget http://mirrors.rackhosting.com/apache/tinkerpop/3.4.7/apache-tinkerpop-gremlin-server-3.4.7-bin.zip
                   - unzip apache-tinkerpop-gremlin-server-3.4.7-bin.zip
-                  - cd apache-tinkerpop-gremlin-server-3.4.7-bin
+                  - cd apache-tinkerpop-gremlin-server-3.4.7
                   - bin/gremlin-server.sh start
                   - cd ..
               pre_build:
