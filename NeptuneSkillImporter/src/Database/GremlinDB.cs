@@ -31,7 +31,10 @@ namespace NeptuneSkillImporter.Database
         {
             foreach (var skill in skills)
             {
-                var node = _graph.AddV("skill").Property("name", skill.Name).Property("category", skill.Category).Next();
+                if (_nodes.ContainsKey(skill.Name))
+                    continue;
+
+                var node = _graph.V().Has("skill", "name", skill.Name).Fold().Coalesce<Vertex>(__.Unfold<Vertex>(), _graph.AddV("skill").Property("name", skill.Name).Property("category", skill.Category)).Next();
                 _nodes.Add(skill.Name, node);
             }
         }

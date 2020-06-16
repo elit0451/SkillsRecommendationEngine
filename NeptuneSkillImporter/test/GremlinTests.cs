@@ -61,6 +61,25 @@ namespace NeptuneSkillImporterTests
 
         [Theory]
         [InlineData("localhost", 8182)]
+        public void InsertRepeatedNodesTest(string host, int port)
+        {
+            var gremlinDB = new GremlinDB(host, port);
+            gremlinDB.Drop();
+
+            var skills = new List<Skill>
+            {
+                new Skill() {Name = ".net", Category = "platforms"},
+                new Skill() {Name = "c#", Category = "languages"},
+                new Skill() {Name = "c#", Category = "languages"}
+            };
+
+            gremlinDB.InsertNodes(skills);
+
+            Assert.Equal(2, gremlinDB.CountNodes());
+        }
+
+        [Theory]
+        [InlineData("localhost", 8182)]
         public void InsertEdgesTest(string host, int port)
         {
             var gremlinDB = new GremlinDB(host, port);
