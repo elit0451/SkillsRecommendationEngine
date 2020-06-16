@@ -55,7 +55,7 @@ Resources:
                   dotnet: 2.2
                   java: corretto11
                 commands:
-                  - wget https://www.apache.org/dyn/closer.lua/tinkerpop/3.4.7/apache-tinkerpop-gremlin-server-3.4.7-bin.zip
+                  - wget http://mirrors.rackhosting.com/apache/tinkerpop/3.4.7/apache-tinkerpop-gremlin-server-3.4.7-bin.zip
                   - unzip apache-tinkerpop-gremlin-server-3.4.7-bin.zip
                   - cd apache-tinkerpop-gremlin-server-3.4.7-bin
                   - bin/gremlin-server.sh start
@@ -111,7 +111,7 @@ Resources:
                   - echo $"export PATH=\$PATH:$(pwd)" >> ~/.bash_profile # adding terraform to global path
                   - source ~/.bash_profile
                   - cd ..
-                  - wget https://www.apache.org/dyn/closer.lua/tinkerpop/3.4.7/apache-tinkerpop-gremlin-server-3.4.7-bin.zip
+                  - wget http://mirrors.rackhosting.com/apache/tinkerpop/3.4.7/apache-tinkerpop-gremlin-server-3.4.7-bin.zip
                   - unzip apache-tinkerpop-gremlin-server-3.4.7-bin.zip
                   - cd apache-tinkerpop-gremlin-server-3.4.7-bin
                   - bin/gremlin-server.sh start
@@ -197,7 +197,7 @@ Resources:
                   - echo $"export PATH=\$PATH:$(pwd)" >> ~/.bash_profile # adding terraform to global path
                   - source ~/.bash_profile
                   - cd ..
-                  - wget https://www.apache.org/dyn/closer.lua/tinkerpop/3.4.7/apache-tinkerpop-gremlin-server-3.4.7-bin.zip
+                  - wget http://mirrors.rackhosting.com/apache/tinkerpop/3.4.7/apache-tinkerpop-gremlin-server-3.4.7-bin.zip
                   - unzip apache-tinkerpop-gremlin-server-3.4.7-bin.zip
                   - cd apache-tinkerpop-gremlin-server-3.4.7-bin
                   - bin/gremlin-server.sh start
