@@ -25,6 +25,7 @@ namespace NeptuneSkillImporterTests
             JobPostRepo.Add(jobPosts);
 
             Assert.Equal(2, JobPostRepo.Get().Count);
+            Console.WriteLine(JobPostRepo.Get().Count);
         }
 
         [Fact]
