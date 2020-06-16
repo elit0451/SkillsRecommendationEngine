@@ -177,7 +177,7 @@ resource "aws_instance" "stg-skill-importer-ec2-instance" {
 # Cloudwatch
 resource "aws_cloudwatch_event_rule" "stg-skill-importer-start-rule" {
   name                = "stg-skill-importer-start-rule"
-  schedule_expression = "rate(10 minutes)"
+  schedule_expression = "rate(1 day)"
 }
 
 resource "aws_cloudwatch_event_target" "stg-skill-importer-start-target" {

@@ -25,6 +25,7 @@ resource "aws_lambda_function" "stg-SkillQuerier-lambda" {
   filename         = "../../src/SkillQuerier/bin/Debug/netcoreapp2.1/SkillQuerier.zip"
   source_code_hash = filebase64sha256("../../src/SkillQuerier/bin/Debug/netcoreapp2.1/SkillQuerier.zip")
   timeout          = 10
+  memory_size      = 512
 
   vpc_config {
     subnet_ids         = ["${data.aws_subnet.stg-skill-importer-subnet.id}", "${data.aws_subnet.stg-skill-importer-subnet-bk.id}"]

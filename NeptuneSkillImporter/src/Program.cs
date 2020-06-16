@@ -23,7 +23,7 @@ namespace NeptuneSkillImporter
         {
             const string bucketName = "jobposts-scraped";
             var s3Connector = new S3Connector(RegionEndpoint.EUWest1, bucketName);
-            ICollection<S3Object> jobPostsKeys = await s3Connector.GetFiles();
+            ICollection<S3Object> jobPostsKeys = await s3Connector.GetFiles(from: DateTime.Now);
             ICollection<JobPost> jobPostsObjs = await s3Connector.GetFileContents(jobPostsKeys);
 
             JobPostRepo.Add(jobPostsObjs);
