@@ -200,7 +200,7 @@ Resources:
                   - dotnet lambda package -c Release -o ./bin/Release/netcoreapp2.1/SkillQuerier.zip -f netcoreapp2.1
                   - cd ../../../SkillRecommendationApp/src/SkillRecommendationApp
                   - dotnet lambda package -c Release -o ./bin/Release/netcoreapp2.1/SkillRecommendationApp.zip -f netcoreapp2.1
-                  - cd ../../../
+                  - cd ../../../    
               post_build:
                 commands:
                   - cd NeptuneSkillImporter

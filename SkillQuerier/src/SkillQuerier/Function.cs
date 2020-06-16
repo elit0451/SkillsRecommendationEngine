@@ -20,7 +20,14 @@ namespace SkillQuerier
         private readonly GremlinDB _db;
         public Functions()
         {
-            _db = new GremlinDB("tf-20200508130339734800000002.cjpaettbkbiu.eu-west-1.neptune.amazonaws.com");
+            try
+            {
+                _db = new GremlinDB("tf-20200508130339734800000002.cjpaettbkbiu.eu-west-1.neptune.amazonaws.com");
+            }
+            catch (Exception)
+            {
+                _db = null;
+            }
         }
 
         /// <summary>
