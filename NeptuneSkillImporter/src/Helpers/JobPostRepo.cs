@@ -20,13 +20,13 @@ namespace NeptuneSkillImporter.Helpers
             var jobPostWithSkills = new JobPost("Best Job", "Good Job");
             jobPostWithSkills.Keywords.Add("c#");
             jobPostWithSkills.Keywords.Add(".net");
-            //jobPostWithSkills.Keywords.Add("freemarker");
+            jobPostWithSkills.Keywords.Add("freemarker");
 
             var jobPosts = new List<JobPost>
             {
-                new JobPost("c#", ".net"),
-                new JobPost(".net", "c#"),
-                new JobPost("c# .net", ""),
+                new JobPost(title1, post1),
+                new JobPost(title2, post2),
+                new JobPost(title3, post3),
                 jobPostWithSkills
             };
 
