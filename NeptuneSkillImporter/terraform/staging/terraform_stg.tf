@@ -166,6 +166,40 @@ resource "aws_instance" "stg-skill-importer-ec2-instance" {
   subnet_id                   = aws_subnet.stg-skill-importer-subnet.id
   key_name                    = "ssh-ec2-test"
   associate_public_ip_address = true
+  user_data                   = <<-EOT
+Content-Type: multipart/mixed; boundary="//"
+MIME-Version: 1.0
+
+--//
+Content-Type: text/cloud-config; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="cloud-config.txt"
+
+#cloud-config
+cloud_final_modules:
+- [scripts-user, always]
+
+--//
+Content-Type: text/x-shellscript; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="userdata.txt"
+
+#!/bin/bash
+export DOTNET_CLI_HOME=/home/ec2-user
+rm -rf SkillsRecommendationEngine
+sudo rpm -Uvh https://packages.microsoft.com/config/rhel/7/packages-microsoft-prod.rpm
+sudo yum update -y
+sudo yum install git -y
+sudo yum install dotnet-sdk-2.1 -y
+git clone https://github.com/elit0451/SkillsRecommendationEngine.git
+cd SkillsRecommendationEngine/NeptuneSkillImporter/src/
+dotnet restore
+dotnet run tf-20200508130257485300000001.cluster-cjpaettbkbiu.eu-west-1.neptune.amazonaws.com 8182
+shutdown -h now
+--//
+  EOT
 
 
   tags = {
