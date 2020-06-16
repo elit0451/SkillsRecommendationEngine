@@ -195,6 +195,7 @@ sudo yum install git -y
 sudo yum install dotnet-sdk-2.1 -y
 git clone https://github.com/elit0451/SkillsRecommendationEngine.git
 cd SkillsRecommendationEngine/NeptuneSkillImporter/src/
+git checkout staging
 dotnet restore
 dotnet run tf-20200508130257485300000001.cluster-cjpaettbkbiu.eu-west-1.neptune.amazonaws.com 8182
 shutdown -h now

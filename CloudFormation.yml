@@ -1,0 +1,232 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: A sample .Net Core deployment pipeline
+Parameters:
+  GitCloneUrl:
+    Description: Github clone url
+    Type: String
+    Default: https://github.com/elit0451/SkillsRecommendationEngine.git
+Resources:
+  DeploymentPipelinePoCRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: "Allow"
+            Principal: 
+              Service: codebuild.amazonaws.com
+            Action: "sts:AssumeRole"
+      Description: .Net Core Lambda deployment pipeline Role
+      RoleName: !Sub '${AWS::StackName}Role'
+      Policies: 
+        - PolicyName: "FullAdminRights"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - Effect: "Allow"
+                Action: 
+                  - '*'
+                Resource: '*'
+  DevelopmentPipeline:
+    Type: AWS::CodeBuild::Project
+    Properties: 
+      Artifacts:
+        Type: no_artifacts
+      Description: .Net Core Lambda testing pipeline - managed by CF ${AWS::StackName}
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
+        # EnvironmentVariables:
+        # - Name: AWS_TABLE_SLACK_LEADS
+          # Type: PARAMETER_STORE
+      Name: !Sub '${AWS::StackName}-Development'
+      QueuedTimeoutInMinutes: 5
+      ServiceRole: !Ref DeploymentPipelinePoCRole
+      Source: 
+          Auth: 
+            Type: OAUTH
+          BuildSpec: !Sub |
+            version: 0.2
+            phases:
+              install:
+                runtime-versions:
+                  dotnet: 2.2
+              build:
+                commands:
+                  - cd NeptuneSkillImporter
+                  - dotnet test
+                  - cd ../SkillQuerier
+                  - dotnet test
+                  - cd ../SkillRecommendationApp
+                  - dotnet test
+          Location: !Ref GitCloneUrl
+          ReportBuildStatus: true
+          Type: GITHUB
+      TimeoutInMinutes: 10
+      Triggers:
+        Webhook: true
+        FilterGroups:
+          - - Type: EVENT
+              Pattern: PULL_REQUEST_CREATED, PULL_REQUEST_UPDATED
+  StagingPipeline:
+    Type: AWS::CodeBuild::Project
+    Properties: 
+      Artifacts:
+        Type: no_artifacts
+      Description: .Net Core Lambda staging pipeline - managed by CF ${AWS::StackName}
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
+      Name: !Sub '${AWS::StackName}-Staging'
+      QueuedTimeoutInMinutes: 5
+      ServiceRole: !Ref DeploymentPipelinePoCRole
+      Source: 
+          Auth: 
+            Type: OAUTH
+          BuildSpec: !Sub |
+            version: 0.2
+            phases:
+              install:
+                runtime-versions:
+                  dotnet: 2.2
+                commands:
+                  - PREVIOUS_COMMIT_ID=$(git rev-parse HEAD | xargs git rev-list --parents -n 1 | awk '{print $2}')
+                  - echo $PREVIOUS_COMMIT_ID
+                  - export TF_VAR_previous_commit_id=$PREVIOUS_COMMIT_ID
+                  - dotnet tool install --global Amazon.Lambda.Tools
+                  - wget https://releases.hashicorp.com/terraform/0.12.20/terraform_0.12.20_linux_amd64.zip -q # getting terraform executable with no console output (-q)
+                  - unzip terraform_0.12.20_linux_amd64.zip -d ./terraform_app
+                  - cd terraform_app
+                  - echo $"export PATH=\$PATH:$(pwd)" >> ~/.bash_profile # adding terraform to global path
+                  - source ~/.bash_profile
+                  - cd ..
+              pre_build:
+                commands:
+                  - cd NeptuneSkillImporter
+                  - dotnet restore
+                  - cd ../SkillQuerier
+                  - dotnet restore
+                  - cd ../SkillRecommendationApp
+                  - dotnet restore
+                  - cd ..
+              build:
+                commands:
+                  - cd NeptuneSkillImporter/src
+                  - dotnet lambda package -c Debug -o ./bin/Debug/netcoreapp2.1/NeptuneSkillImporter.zip -f netcoreapp2.1
+                  - cd ../../SkillQuerier/src/SkillQuerier
+                  - dotnet lambda package -c Debug -o ./bin/Debug/netcoreapp2.1/SkillQuerier.zip -f netcoreapp2.1
+                  - cd ../../../SkillRecommendationApp/src/SkillRecommendationApp
+                  - dotnet lambda package -c Debug -o ./bin/Debug/netcoreapp2.1/SkillRecommendationApp.zip -f netcoreapp2.1
+                  - cd ../../../
+              post_build:
+                commands:
+                  - cd NeptuneSkillImporter
+                  - dotnet test
+                  - cd ../SkillQuerier
+                  - dotnet test
+                  - cd ../SkillRecommendationApp
+                  - dotnet test
+                  - cd ../NeptuneSkillImporter/terraform/staging
+                  - terraform init -input=false
+                  - terraform apply -input=false -auto-approve
+                  - cd ../../../SkillQuerier/terraform/staging
+                  - terraform init -input=false
+                  - terraform apply -input=false -auto-approve
+                  - cd ../../../SkillRecommendationApp/terraform/staging
+                  - terraform init -input=false
+                  - terraform apply -input=false -auto-approve
+          GitCloneDepth: 0
+          Location: !Ref GitCloneUrl
+          ReportBuildStatus: true
+          Type: GITHUB
+      TimeoutInMinutes: 10
+      Triggers:
+        Webhook: true
+        FilterGroups:
+          - - Type: EVENT
+              Pattern: PUSH
+            - Type: HEAD_REF
+              Pattern: ^refs/heads/staging$
+  DeploymentPipeline:
+    Type: AWS::CodeBuild::Project
+    Properties: 
+      Artifacts:
+        Type: no_artifacts
+      Description: .Net Core Lambda deployment pipeline - managed by CF ${AWS::StackName}
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
+      Name: !Sub '${AWS::StackName}-Prod'
+      QueuedTimeoutInMinutes: 5
+      ServiceRole: !Ref DeploymentPipelinePoCRole
+      Source: 
+          Auth: 
+            Type: OAUTH
+          BuildSpec: !Sub |
+            version: 0.2
+            phases:
+              install:
+                runtime-versions:
+                  dotnet: 2.2
+                commands:
+                  - PREVIOUS_COMMIT_ID=$(git rev-parse HEAD | xargs git rev-list --parents -n 1 | awk '{print $2}')
+                  - echo $PREVIOUS_COMMIT_ID
+                  - export TF_VAR_previous_commit_id=$PREVIOUS_COMMIT_ID
+                  - dotnet tool install --global Amazon.Lambda.Tools
+                  - wget https://releases.hashicorp.com/terraform/0.12.20/terraform_0.12.20_linux_amd64.zip -q # getting terraform executable with no console output (-q)
+                  - unzip terraform_0.12.20_linux_amd64.zip -d ./terraform_app
+                  - cd terraform_app
+                  - echo $"export PATH=\$PATH:$(pwd)" >> ~/.bash_profile # adding terraform to global path
+                  - source ~/.bash_profile
+                  - cd ..
+              pre_build:
+                commands:
+                  - cd NeptuneSkillImporter
+                  - dotnet restore
+                  - cd ../SkillQuerier
+                  - dotnet restore
+                  - cd ../SkillRecommendationApp
+                  - dotnet restore
+                  - cd ..
+              build:
+                commands:
+                  - cd NeptuneSkillImporter/src
+                  - dotnet lambda package -c Release -o ./bin/Release/netcoreapp2.1/NeptuneSkillImporter.zip -f netcoreapp2.1
+                  - cd ../../SkillQuerier/src/SkillQuerier
+                  - dotnet lambda package -c Release -o ./bin/Release/netcoreapp2.1/SkillQuerier.zip -f netcoreapp2.1
+                  - cd ../../../SkillRecommendationApp/src/SkillRecommendationApp
+                  - dotnet lambda package -c Release -o ./bin/Release/netcoreapp2.1/SkillRecommendationApp.zip -f netcoreapp2.1
+                  - cd ../../../
+              post_build:
+                commands:
+                  - cd NeptuneSkillImporter
+                  - dotnet test
+                  - cd ../SkillQuerier
+                  - dotnet test
+                  - cd ../SkillRecommendationApp
+                  - dotnet test
+                  - cd ../NeptuneSkillImporter/terraform/production
+                  - terraform init -input=false
+                  - terraform apply -input=false -auto-approve
+                  - cd ../../../SkillQuerier/terraform/production
+                  - terraform init -input=false
+                  - terraform apply -input=false -auto-approve
+                  - cd ../../../SkillRecommendationApp/terraform/production
+                  - terraform init -input=false
+                  - terraform apply -input=false -auto-approve
+          GitCloneDepth: 0
+          Location: !Ref GitCloneUrl
+          ReportBuildStatus: true
+          Type: GITHUB
+      TimeoutInMinutes: 10
+      Triggers:
+        Webhook: true
+        FilterGroups:
+          - - Type: EVENT
+              Pattern: PUSH
+            - Type: HEAD_REF
+              Pattern: ^refs/heads/master$
