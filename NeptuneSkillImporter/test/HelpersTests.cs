@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NeptuneSkillImporter.Helpers;
 using NeptuneSkillImporter.Models;
@@ -10,6 +11,7 @@ namespace NeptuneSkillImporterTests
         [Fact]
         public void JobPostRepoAddTest()
         {
+            Console.WriteLine("HelpersTests - JobPostRepoAddTest");
             var jobPost1 = new JobPost("Best Job for you", "Full stack developer is needed");
             var jobPost2 = new JobPost("Best Job", ".Net developer is needed");
             var jobPosts = new List<JobPost>

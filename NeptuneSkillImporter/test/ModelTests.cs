@@ -11,6 +11,7 @@ namespace NeptuneSkillImporterTests
         [Fact]
         public void JobPostObjFromCtorTest()
         {
+            Console.WriteLine("ModelTests - JobPostObjFromCtorTest");
             const string title = "Best Job";
             const string body = ".Net developer is needed";
 
