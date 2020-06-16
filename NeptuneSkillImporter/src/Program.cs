@@ -44,7 +44,7 @@ namespace NeptuneSkillImporter
                 var gremlinDB = new GremlinDB(endpoint, port);
 
                 // Drop entire DB
-                gremlinDB.Drop();
+                //gremlinDB.Drop();
 
                 // get job posts
                 var jobPosts = JobPostRepo.Get();
