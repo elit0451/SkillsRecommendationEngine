@@ -29,12 +29,12 @@ namespace NeptuneSkillImporter
             JobPostRepo.Add(jobPostsObjs);
             Console.WriteLine("Starting the RUN()");
             if (args.Length > 0 && !string.IsNullOrEmpty(args[0]) && !string.IsNullOrEmpty(args[1]))
-                new Program().Run(args[0], Convert.ToInt32(args[1]));
+                await new Program().RunAsync(args[0], Convert.ToInt32(args[1]));
             else
-                new Program().Run();
+                await new Program().RunAsync();
         }
 
-        public void Run(string endpoint = "localhost", int port = 8182)
+        public async Task RunAsync(string endpoint = "localhost", int port = 8182)
         {
             try
             {
@@ -89,6 +89,7 @@ namespace NeptuneSkillImporter
 
                 Console.WriteLine("\n\nTotal number of skills: {0}", gremlinDB.CountNodes());
 
+                await Helpers.Metrics.CommitDataAsync();
                 Console.WriteLine("Finished");
             }
             catch (Exception e)
