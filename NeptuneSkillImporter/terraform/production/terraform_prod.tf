@@ -124,12 +124,17 @@ resource "aws_security_group" "prod-skill-importer-security-group" {
   }
 }
 
+# Availability zones
+data "aws_availability_zones" "prod-availability-zones" {
+  state = "available"
+}
+
 # Neptune
 resource "aws_neptune_cluster" "prod-skill-importer-cluster" {
   engine                    = "neptune"
   backup_retention_period   = 1
   apply_immediately         = true
-  availability_zones        = ["eu-west-1a", "eu-west-1b"]
+  availability_zones        = data.aws_availability_zones.prod-availability-zones.names
   vpc_security_group_ids    = ["${aws_security_group.prod-skill-importer-security-group.id}"]
   neptune_subnet_group_name = aws_neptune_subnet_group.prod-skill-importer-subnet-group.name
   skip_final_snapshot       = true

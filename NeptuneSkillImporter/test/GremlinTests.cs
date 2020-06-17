@@ -1,4 +1,4 @@
-/*using Gremlin.Net.Driver;
+using Gremlin.Net.Driver;
 using NeptuneSkillImporter.Database;
 using Xunit;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace NeptuneSkillImporterTests
         public void ShouldBuildCorrectUri(string host, int port)
         {
             Console.WriteLine($"GremlinTests - ShouldBuildCorrectUri - {host}:{port}");
-            var gremlinServer = new GremlinServer(host, port);
+            var gremlinServer = new GremlinServer(host, port, false);
 
             var uri = gremlinServer.Uri;
 
@@ -28,7 +28,7 @@ namespace NeptuneSkillImporterTests
         public void NoNodesTest(string host, int port)
         {
             Console.WriteLine($"NoNodesTest - {host}:{port}");
-            var gremlinDB = new GremlinDB(host, port);
+            var gremlinDB = new GremlinDB(host, port, false);
 
             gremlinDB.Drop();
 
@@ -40,7 +40,7 @@ namespace NeptuneSkillImporterTests
         [InlineData("localhost", 8182)]
         public void InsertNodesTest(string host, int port)
         {
-            var gremlinDB = new GremlinDB(host, port);
+            var gremlinDB = new GremlinDB(host, port, false);
             gremlinDB.Drop();
 
             var skills = new List<Skill>
@@ -67,7 +67,7 @@ namespace NeptuneSkillImporterTests
         [InlineData("localhost", 8182)]
         public void InsertRepeatedNodesTest(string host, int port)
         {
-            var gremlinDB = new GremlinDB(host, port);
+            var gremlinDB = new GremlinDB(host, port, false);
             gremlinDB.Drop();
 
             var skills = new List<Skill>
@@ -86,7 +86,7 @@ namespace NeptuneSkillImporterTests
         [InlineData("localhost", 8182)]
         public void InsertEdgesTest(string host, int port)
         {
-            var gremlinDB = new GremlinDB(host, port);
+            var gremlinDB = new GremlinDB(host, port, false);
             gremlinDB.Drop();
 
             var skills = new List<Skill>
@@ -130,7 +130,7 @@ namespace NeptuneSkillImporterTests
         [InlineData("localhost", 8182)]
         public void GetRelatedSkillsTest(string host, int port)
         {
-            var gremlinDB = new GremlinDB(host, port);
+            var gremlinDB = new GremlinDB(host, port, false);
             gremlinDB.Drop();
 
             var skills = new List<Skill>
@@ -185,4 +185,4 @@ namespace NeptuneSkillImporterTests
             Assert.True(relatedSkills.Find(skill => skill.Name == "css").Weight == 20);
         }
     }
-}*/
+}

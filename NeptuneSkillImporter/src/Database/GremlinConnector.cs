@@ -9,9 +9,9 @@ namespace NeptuneSkillImporter.Database
     {
         private readonly GremlinClient _gremlinClient;
 
-        public GremlinConnector(string endpoint, int port)
+        public GremlinConnector(string endpoint, int port, bool ssl)
         {
-            var gremlinServer = new GremlinServer(endpoint, port, true);
+            var gremlinServer = new GremlinServer(endpoint, port, ssl);
             _gremlinClient = new GremlinClient(gremlinServer);
         }
 

@@ -14,9 +14,9 @@ namespace NeptuneSkillImporter.Database
         private readonly GraphTraversalSource _graph;
         private readonly Dictionary<string, Vertex> _nodes;
 
-        public GremlinDB(string endpoint, int port)
+        public GremlinDB(string endpoint, int port, bool ssl = true)
         {
-            _gremlinConnector = new GremlinConnector(endpoint, port);
+            _gremlinConnector = new GremlinConnector(endpoint, port, ssl);
             _graph = _gremlinConnector.GetGraph();
 
             _nodes = new Dictionary<string, Vertex>();
