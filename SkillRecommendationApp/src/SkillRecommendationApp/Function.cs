@@ -63,7 +63,7 @@ namespace SkillRecommendationApp
                         };
 
                         var httpClient = new HttpClient();
-                        HttpResponseMessage httpResponse = httpClient.PostAsJsonAsync("https://inf7jhpbnk.execute-api.eu-west-1.amazonaws.com/staging/relatedskills", queryObj).Result;
+                        HttpResponseMessage httpResponse = httpClient.PostAsJsonAsync("https://7dq5d3f0yb.execute-api.eu-west-1.amazonaws.com/production/relatedskills", queryObj).Result;
 
                         var payload = httpResponse.Content.ReadAsJsonAsync<JArray>().Result;
 
