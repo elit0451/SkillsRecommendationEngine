@@ -37,13 +37,10 @@ namespace SkillQuerier
         /// <returns>The list of blogs</returns>
         public APIGatewayProxyResponse Get(APIGatewayProxyRequest request, ILambdaContext context)
         {
-            context.Logger.LogLine(Environment.GetEnvironmentVariable("NEPTUNE_ENDPOINT"));
             JObject bodyObj = JObject.Parse(request.Body);
             int limit = bodyObj.SelectToken("limit").Value<int>();
             string skillName = bodyObj.SelectToken("skillName").Value<string>();
-            context.Logger.LogLine("HERE!");
             List<Skill> skills = _db.GetRelatedSkills(skillName, limit);
-            context.Logger.LogLine("Here now");
             var response = new APIGatewayProxyResponse
             {
                 StatusCode = (int)HttpStatusCode.OK,

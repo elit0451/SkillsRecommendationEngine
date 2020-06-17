@@ -28,7 +28,7 @@ namespace NeptuneSkillImporter.Helpers
                 return;
             await _amazonCloudWatch.PutMetricDataAsync(new PutMetricDataRequest
             {
-                Namespace = "SkillRecommendationEngine",
+                Namespace = "Skill Recommendation Engine",
                 MetricData = _data
             });
             _data = new List<MetricDatum>();

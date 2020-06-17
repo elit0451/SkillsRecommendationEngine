@@ -43,18 +43,10 @@ namespace NeptuneSkillImporter.Database
 
             Metrics.AddData(new MetricDatum
             {
-                MetricName = "SkillsRecommendationEngine",
+                MetricName = "NodesAdded",
                 Value = _nodes.Count,
                 Unit = StandardUnit.Count,
-                TimestampUtc = DateTime.UtcNow,
-                Dimensions = new List<Dimension>
-                            {
-                                new Dimension
-                                {
-                                    Name = "NodesAdded",
-                                    Value = DateTime.Now.ToString()
-                                },
-                            }
+                TimestampUtc = DateTime.UtcNow
             });
         }
         public void InsertEdges(ICollection<ICollection<Skill>> jobPostsSkills)
@@ -91,18 +83,10 @@ namespace NeptuneSkillImporter.Database
 
             Metrics.AddData(new MetricDatum
             {
-                MetricName = "SkillsRecommendationEngine",
+                MetricName = "PropertiesUpdated",
                 Value = count,
                 Unit = StandardUnit.Count,
-                TimestampUtc = DateTime.UtcNow,
-                Dimensions = new List<Dimension>
-                            {
-                                new Dimension
-                                {
-                                    Name = "PropertiesUpdated",
-                                    Value = DateTime.Now.ToString()
-                                },
-                            }
+                TimestampUtc = DateTime.UtcNow
             });
         }
         /*
