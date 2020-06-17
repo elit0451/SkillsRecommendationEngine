@@ -203,7 +203,7 @@ git clone https://github.com/elit0451/SkillsRecommendationEngine.git
 cd SkillsRecommendationEngine/NeptuneSkillImporter/src/
 git checkout staging
 dotnet restore
-dotnet run ${aws_neptune_cluster.prod-skill-importer-cluster.endpoint} 8182
+dotnet run ${aws_neptune_cluster.stg-skill-importer-cluster.endpoint} 8182
 shutdown -h now
 --//
   EOT
