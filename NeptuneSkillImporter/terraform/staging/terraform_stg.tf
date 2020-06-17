@@ -171,6 +171,7 @@ resource "aws_instance" "stg-skill-importer-ec2-instance" {
   subnet_id                   = aws_subnet.stg-skill-importer-subnet.id
   key_name                    = "ssh-ec2-test"
   associate_public_ip_address = true
+  iam_instance_profile        = "CloudWatchMetricsAccess"
   user_data                   = <<-EOT
 Content-Type: multipart/mixed; boundary="//"
 MIME-Version: 1.0
