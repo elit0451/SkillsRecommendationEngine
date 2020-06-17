@@ -6,7 +6,7 @@ provider "aws" {
 # Lambda
 resource "aws_lambda_function" "prod-SkillRecommendationApp-lambda" {
   function_name    = "prod-SkillRecommendationApp"
-  handler          = "SkillRecommendationApp::SkillRecommendationApp.Function::Get"
+  handler          = "SkillRecommendationApp::SkillRecommendationApp.Functions::Get"
   runtime          = "dotnetcore2.1"
   role             = "arn:aws:iam::833191605868:role/DeleteThisRole"
   filename         = "../../src/SkillRecommendationApp/bin/Release/netcoreapp2.1/SkillRecommendationApp.zip"
@@ -46,6 +46,8 @@ resource "aws_api_gateway_integration" "integration" {
   integration_http_method = "ANY"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.prod-SkillRecommendationApp-lambda.invoke_arn
+
+  depends_on = [aws_lambda_function.prod-SkillRecommendationApp-lambda]
 }
 
 resource "aws_api_gateway_deployment" "recommendation-receiver-api-deployment" {
@@ -53,4 +55,11 @@ resource "aws_api_gateway_deployment" "recommendation-receiver-api-deployment" {
 
   rest_api_id = aws_api_gateway_rest_api.skill-recommendation-api.id
   stage_name  = "production"
+}
+
+resource "aws_lambda_permission" "recommendation-receiver-allow-invoke" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.prod-SkillRecommendationApp-lambda.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.skill-recommendation-api.execution_arn}/*/*/recommendationReceiver"
 }
