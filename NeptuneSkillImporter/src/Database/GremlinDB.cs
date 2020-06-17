@@ -5,6 +5,9 @@ using Gremlin.Net.Process.Traversal;
 using Gremlin.Net.Structure;
 using NeptuneSkillImporter.Models;
 using Newtonsoft.Json;
+using Amazon.CloudWatch.Model;
+using Amazon.CloudWatch;
+using NeptuneSkillImporter.Helpers;
 
 namespace NeptuneSkillImporter.Database
 {
@@ -37,9 +40,26 @@ namespace NeptuneSkillImporter.Database
                 var node = _graph.V().Has("skill", "name", skill.Name).Fold().Coalesce<Vertex>(__.Unfold<Vertex>(), _graph.AddV("skill").Property("name", skill.Name).Property("category", skill.Category)).Next();
                 _nodes.Add(skill.Name, node);
             }
+
+            Metrics.AddData(new MetricDatum
+            {
+                MetricName = "SkillsRecommendationEngine",
+                Value = 1,
+                Unit = StandardUnit.Count,
+                TimestampUtc = DateTime.UtcNow,
+                Dimensions = new List<Dimension>
+                            {
+                                new Dimension
+                                {
+                                    Name = "NodesAdded",
+                                    Value = _nodes.Count.ToString()
+                                },
+                            }
+            });
         }
         public void InsertEdges(ICollection<ICollection<Skill>> jobPostsSkills)
         {
+            int count = 0;
             foreach (var jobPostSkills in jobPostsSkills)
             {
                 Skill[] skills = jobPostSkills.ToArray();
@@ -63,9 +83,27 @@ namespace NeptuneSkillImporter.Database
                         // increase edge weight count when 2 skills are found in the same job post
                         _graph.V(v1).BothE().Where(__.BothV().HasId(v2.Id))
                           .Property("count", __.Union<int>(__.Values<int>("count"), __.Constant(skills[i].Weight)).Sum<int>()).Next();
+
+                        count++;
                     }
                 }
             }
+
+            Metrics.AddData(new MetricDatum
+            {
+                MetricName = "SkillsRecommendationEngine",
+                Value = 1,
+                Unit = StandardUnit.Count,
+                TimestampUtc = DateTime.UtcNow,
+                Dimensions = new List<Dimension>
+                            {
+                                new Dimension
+                                {
+                                    Name = "PropertiesUpdated",
+                                    Value = count.ToString()
+                                },
+                            }
+            });
         }
         /*
         private async Task RunQueryAsync(GremlinClient gremlinClient)
