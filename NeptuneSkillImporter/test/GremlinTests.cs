@@ -15,7 +15,6 @@ namespace NeptuneSkillImporterTests
         [InlineData("1.2.3.4", 5678)]
         public void ShouldBuildCorrectUri(string host, int port)
         {
-            Console.WriteLine($"GremlinTests - ShouldBuildCorrectUri - {host}:{port}");
             var gremlinServer = new GremlinServer(host, port, false);
 
             var uri = gremlinServer.Uri;
@@ -27,13 +26,11 @@ namespace NeptuneSkillImporterTests
         [InlineData("localhost", 8182)]
         public void NoNodesTest(string host, int port)
         {
-            Console.WriteLine($"NoNodesTest - {host}:{port}");
             var gremlinDB = new GremlinDB(host, port, false);
 
             gremlinDB.Drop();
 
             Assert.Equal(0, gremlinDB.CountNodes());
-            Console.WriteLine(gremlinDB.CountNodes() == 0);
         }
 
         [Theory]

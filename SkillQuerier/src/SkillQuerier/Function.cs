@@ -22,7 +22,7 @@ namespace SkillQuerier
         {
             try
             {
-                _db = new GremlinDB("tf-20200508130339734800000002.cjpaettbkbiu.eu-west-1.neptune.amazonaws.com");
+                _db = new GremlinDB(Environment.GetEnvironmentVariable("NEPTUNE_ENDPOINT"));
             }
             catch (Exception)
             {

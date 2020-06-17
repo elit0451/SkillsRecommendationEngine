@@ -36,6 +36,12 @@ resource "aws_lambda_function" "prod-SkillQuerier-lambda" {
     Name        = "prod-SkillQuerier"
     Environment = "production"
   }
+
+  environment {
+    variables = {
+      NEPTUNE_ENDPOINT = "tf-20200617093124839400000001.cluster-cjpaettbkbiu.eu-west-1.neptune.amazonaws.com"
+    }
+  }
 }
 
 # API Gateway

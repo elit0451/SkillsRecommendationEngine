@@ -18,11 +18,9 @@ namespace NeptuneSkillImporterTests
         [Fact]
         public void S3ConnectorCtorTest()
         {
-            Console.WriteLine("S3ConnectorTests - S3ConnectorCtorTest");
             var s3Connector = new S3Connector(region, bucketName);
 
             Assert.False(s3Connector is null);
-            Console.WriteLine(s3Connector is null);
         }
 
         [Fact]

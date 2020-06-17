@@ -11,7 +11,6 @@ namespace NeptuneSkillImporterTests
         [Fact]
         public void JobPostRepoAddTest()
         {
-            Console.WriteLine("HelpersTests - JobPostRepoAddTest");
             var jobPost1 = new JobPost("Best Job for you", "Full stack developer is needed");
             var jobPost2 = new JobPost("Best Job", ".Net developer is needed");
             var jobPosts = new List<JobPost>
@@ -25,7 +24,6 @@ namespace NeptuneSkillImporterTests
             JobPostRepo.Add(jobPosts);
 
             Assert.Equal(2, JobPostRepo.Get().Count);
-            Console.WriteLine(JobPostRepo.Get().Count);
         }
 
         [Fact]
