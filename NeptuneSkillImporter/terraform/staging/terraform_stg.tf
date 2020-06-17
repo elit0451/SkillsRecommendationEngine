@@ -60,6 +60,11 @@ resource "aws_route_table" "stg-skill-importer-route-table" {
   }
 }
 
+resource "aws_main_route_table_association" "stg-main-route-association" {
+  vpc_id         = aws_vpc.stg-skill-importer-vpc.id
+  route_table_id = aws_route_table.stg-skill-importer-route-table.id
+}
+
 /*
 resource "aws_vpc_endpoint" "stg-skill-importer-sqs-endpoint" {
   vpc_id              = aws_vpc.stg-skill-importer-vpc.id
