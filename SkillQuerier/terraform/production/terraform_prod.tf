@@ -5,15 +5,15 @@ provider "aws" {
 
 # VPC
 data "aws_subnet" "prod-skill-importer-subnet" {
-  id = "subnet-05a5e49ada2d10f31"
+  id = "subnet-03362d02f2d1cadaf"
 }
 
 data "aws_subnet" "prod-skill-importer-subnet-bk" {
-  id = "subnet-04ea7a7be5f7b7640"
+  id = "subnet-09b672555093d86fb"
 }
 
 data "aws_security_group" "prod-skill-importer-security-group" {
-  id = "sg-095570e6c37f63818"
+  id = "sg-009be18c58f9e5952"
 }
 
 # Lambda
