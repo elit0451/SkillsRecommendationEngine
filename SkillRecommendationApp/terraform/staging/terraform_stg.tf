@@ -6,13 +6,13 @@ provider "aws" {
 # Lambda
 resource "aws_lambda_function" "stg-SkillRecommendationApp-lambda" {
   function_name    = "stg-SkillRecommendationApp"
-  handler          = "SkillRecommendationApp::SkillRecommendationApp.Function::Get"
+  handler          = "SkillRecommendationApp::SkillRecommendationApp.Functions::Get"
   runtime          = "dotnetcore2.1"
   role             = "arn:aws:iam::833191605868:role/DeleteThisRole"
   filename         = "../../src/SkillRecommendationApp/bin/Debug/netcoreapp2.1/SkillRecommendationApp.zip"
   source_code_hash = filebase64sha256("../../src/SkillRecommendationApp/bin/Debug/netcoreapp2.1/SkillRecommendationApp.zip")
   timeout          = 10
-  memory_size      = 256
+  memory_size      = 1024
 
   tags = {
     Name        = "stg-SkillRecommendationApp"
@@ -46,6 +46,8 @@ resource "aws_api_gateway_integration" "integration" {
   integration_http_method = "ANY"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.stg-SkillRecommendationApp-lambda.invoke_arn
+
+  depends_on = [aws_lambda_function.stg-SkillRecommendationApp-lambda]
 }
 
 resource "aws_api_gateway_deployment" "recommendation-receiver-api-deployment" {
@@ -53,4 +55,11 @@ resource "aws_api_gateway_deployment" "recommendation-receiver-api-deployment" {
 
   rest_api_id = aws_api_gateway_rest_api.skill-recommendation-api.id
   stage_name  = "staging"
+}
+
+resource "aws_lambda_permission" "recommendation-receiver-allow-invoke" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.stg-SkillRecommendationApp-lambda.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.skill-recommendation-api.execution_arn}/*/*/recommendationReceiver"
 }

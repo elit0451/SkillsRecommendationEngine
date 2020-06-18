@@ -12,7 +12,7 @@ resource "aws_lambda_function" "prod-SkillRecommendationApp-lambda" {
   filename         = "../../src/SkillRecommendationApp/bin/Release/netcoreapp2.1/SkillRecommendationApp.zip"
   source_code_hash = filebase64sha256("../../src/SkillRecommendationApp/bin/Release/netcoreapp2.1/SkillRecommendationApp.zip")
   timeout          = 10
-  memory_size      = 256
+  memory_size      = 1024
 
   tags = {
     Name        = "prod-SkillRecommendationApp"
