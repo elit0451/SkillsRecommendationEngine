@@ -8,7 +8,7 @@
     <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
     <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.7.0" />
     <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="1.2.0" />
-    <PackageReference Include="NewtonSoft.JSON" Version="12.0.3" />
+    <PackageReference Include="NewtonSoft.JSON" Version="13.0.2" />
     <PackageReference Include="Gremlin.Net" Version="3.4.6" />
   </ItemGroup>
 </Project>
